@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: stg_departments
+    description: "Cleaned department reference data."
+    columns:
+      - name: department_id
+        description: "Unique identifier for each department."
+        tests:
+          - unique
+          - not_null
+      - name: department_name
+        description: "Standardized, lowercase department name."
+        tests:
+          - not_null
+
+  - name: stg_employees
+    description: "Cleaned employee records, one row per employee."
+    columns:
+      - name: employee_id
+        description: "Unique identifier for each employee."
+        tests:
+          - unique
+          - not_null
+      - name: employee_name
+        description: "Full name of the employee."
+        tests:
+          - not_null
+      - name: department_id
+        description: "Foreign key referencing stg_departments.department_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_departments')
+              field: department_id
+      - name: salary
+        description: "Employee's current salary in local currency."
+        tests:
+          - not_null
+      - name: status
+        description: "Employment status of the employee."
+        tests:
+          - accepted_values:
+              values: ['active', 'terminated', 'on_leave']
+
+  - name: stg_salary_history
+    description: "Historical record of salary changes per employee."
+    columns:
+      - name: employee_id
+        description: "References the employee whose salary changed."
+        tests:
+          - not_null
+      - name: new_salary
+        description: "Salary value after the change."
+        tests:
+          - not_null

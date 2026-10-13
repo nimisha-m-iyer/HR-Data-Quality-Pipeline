@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: dim_employees
+    description: "One row per employee, enriched with department details. Business-ready employee dimension table."
+    columns:
+      - name: employee_id
+        description: "Unique identifier for each employee."
+        tests:
+          - unique
+          - not_null
+      - name: department_id
+        description: "Department the employee belongs to. May be null if department was deleted or misassigned."
+      - name: salary
+        description: "Employee's current salary."
+      - name: status
+        description: "Employment status: active, terminated, or on_leave."
+
+  - name: fct_headcount_by_department
+    description: "Aggregated headcount and average salary metrics per department, broken down by employment status."
+    columns:
+      - name: department_id
+        description: "Department this row summarizes."
+        tests:
+          - not_null
+      - name: total_employees
+        description: "Total number of employees ever assigned to this department."
+        tests:
+          - not_null
+      - name: avg_salary
+        description: "Average salary across all employees in this department (nulls excluded automatically by AVG)."
